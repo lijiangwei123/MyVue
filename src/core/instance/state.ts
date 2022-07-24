@@ -51,6 +51,7 @@ export function proxy(target: Object, sourceKey: string, key: string) {
 
 export function initState(vm: Component) {
   const opts = vm.$options
+  // initProps: 把props中的成员转换成响应式,并注入到vue实例中
   if (opts.props) initProps(vm, opts.props)
 
   // Composition API
@@ -132,7 +133,9 @@ function initData(vm: Component) {
       )
   }
   // proxy data on instance
+  // 获取data中的所有属性
   const keys = Object.keys(data)
+  // 获取props中的所有属性
   const props = vm.$options.props
   const methods = vm.$options.methods
   let i = keys.length
@@ -155,6 +158,7 @@ function initData(vm: Component) {
     }
   }
   // observe data
+  // 响应式处理
   const ob = observe(data)
   ob && ob.vmCount++
 }
@@ -367,19 +371,26 @@ export function stateMixin(Vue: typeof Component) {
     cb: any,
     options?: Record<string, any>
   ): Function {
+    // 获取Vue实例this
     const vm: Component = this
+    // 判断如果cb是对象的时候执行createWatcher
     if (isPlainObject(cb)) {
       return createWatcher(vm, expOrFn, cb, options)
     }
     options = options || {}
+    // 标记为用户watcher
     options.user = true
+    // 创建用户watcher对象
     const watcher = new Watcher(vm, expOrFn, cb, options)
+    // 判断immediate如果为true
     if (options.immediate) {
       const info = `callback for immediate watcher "${watcher.expression}"`
       pushTarget()
+      // 立即执行一次cb回调，并且把当前值(newVal)传入cb函数
       invokeWithErrorHandling(cb, vm, [watcher.value], vm, info)
       popTarget()
     }
+    // 返回取消监听的方法
     return function unwatchFn() {
       watcher.teardown()
     }

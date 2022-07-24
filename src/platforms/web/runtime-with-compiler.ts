@@ -16,7 +16,7 @@ const idToTemplate = cached(id => {
   const el = query(id)
   return el && el.innerHTML
 })
-
+// 保留Vue实例的$mount方法
 const mount = Vue.prototype.$mount
 Vue.prototype.$mount = function (
   el?: string | Element,
@@ -58,6 +58,7 @@ Vue.prototype.$mount = function (
         return this
       }
     } else if (el) {
+      // 如果没有template获取el的 outerHTML 作为模板
       // @ts-expect-error
       template = getOuterHTML(el)
     }
@@ -66,7 +67,7 @@ Vue.prototype.$mount = function (
       if (__DEV__ && config.performance && mark) {
         mark('compile')
       }
-
+      // 把template转换成render函数
       const { render, staticRenderFns } = compileToFunctions(
         template,
         {

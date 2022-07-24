@@ -2,7 +2,8 @@ import { extend } from 'shared/util'
 import { CompilerOptions, CompiledResult, WarningMessage } from 'types/compiler'
 import { detectErrors } from './error-detector'
 import { createCompileToFunctionFn } from './to-function'
-
+// baseOptions 平台相关的options
+// src\platforms\web\compiler\options.js 中定义
 export function createCompilerCreator(baseCompile: Function): Function {
   return function createCompiler(baseOptions: CompilerOptions) {
     function compile(

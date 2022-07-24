@@ -45,7 +45,7 @@ export class CodegenState {
       !!el.component || !isReservedTag(el.tag)
     this.onceId = 0
     this.staticRenderFns = []
-    this.pre = false
+    this.pre = false // 标记当前节点是否有v-pre指令
   }
 }
 
@@ -96,6 +96,8 @@ export function genElement(el: ASTElement, state: CodegenState): string {
     } else {
       let data
       if (!el.plain || (el.pre && state.maybeComponent(el))) {
+        // 生成元素的属性/指令/事件等
+        // 处理各种指令，包括genDirctives（model、text、html）
         data = genData(el, state)
       }
 
@@ -578,6 +580,7 @@ export function genText(text: ASTText | ASTExpression): string {
 }
 
 export function genComment(comment: ASTText): string {
+  // JSON.stringify(comment.text) 字符串加上引号 hello => "hello"
   return `_e(${JSON.stringify(comment.text)})`
 }
 

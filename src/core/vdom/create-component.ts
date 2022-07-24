@@ -108,6 +108,8 @@ export function createComponent(
   const baseCtor = context.$options._base
 
   // plain options object: turn it into a constructor
+  // 如果Ctor不是一个构造函数，是一个对象
+  // 使用Vue.extend()创建一个子组件的构造函数
   if (isObject(Ctor)) {
     Ctor = baseCtor.extend(Ctor as typeof Component)
   }
@@ -144,6 +146,7 @@ export function createComponent(
   // transform component v-model data into props & events
   if (isDef(data.model)) {
     // @ts-expect-error
+    // 处理组件的v-modal
     transformModel(Ctor.options, data)
   }
 
@@ -184,11 +187,15 @@ export function createComponent(
   }
 
   // install component management hooks onto the placeholder node
+  // 安装组件的勾子函数 init/prepatch/insert/destroy
+  // 准备好了，data.hook 中的勾子函数
   installComponentHooks(data)
 
   // return a placeholder vnode
   // @ts-expect-error
   const name = Ctor.options.name || tag
+  // 创建自定义组件的VNode，设置自定义组件的名字
+  // 记录this.componentOptions = componentOptions
   const vnode = new VNode(
     // @ts-expect-error
     `vue-component-${Ctor.cid}${name ? `-${name}` : ''}`,
@@ -222,11 +229,14 @@ export function createComponentInstanceForVnode(
     options.render = inlineTemplate.render
     options.staticRenderFns = inlineTemplate.staticRenderFns
   }
+  // 创建组件实例
   return new vnode.componentOptions.Ctor(options)
 }
 
 function installComponentHooks(data: VNodeData) {
   const hooks = data.hook || (data.hook = {})
+  // 用户就可以传递自定义的勾子函数
+  // 把用户传入的自定义的勾子函数和 componentVNodeHooks中预定义的勾子函数合并
   for (let i = 0; i < hooksToMerge.length; i++) {
     const key = hooksToMerge[i]
     const existing = hooks[key]

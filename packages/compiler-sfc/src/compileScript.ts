@@ -782,7 +782,7 @@ export function compileScript(
     if (node.trailingComments && node.trailingComments.length > 0) {
       const lastCommentNode =
         node.trailingComments[node.trailingComments.length - 1]
-      end = lastCommentNode.end + startOffset
+      end = lastCommentNode.end! + startOffset
     }
     // locate the end of whitespace between this statement and the next
     while (end <= source.length) {

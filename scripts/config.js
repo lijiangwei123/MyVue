@@ -17,6 +17,7 @@ const banner =
 
 const aliases = require('./alias')
 const resolve = p => {
+  // 根据路径中的前半部分去alias中找别名
   const base = p.split('/')[0]
   if (aliases[base]) {
     return path.resolve(aliases[base], p.slice(base.length + 1))
@@ -302,7 +303,8 @@ function genConfig(name) {
 
   return config
 }
-
+// 判断环境变量是否有TARGET
+// 如果有的话，使用genConfig()生成rollup配置文件
 if (process.env.TARGET) {
   module.exports = genConfig(process.env.TARGET)
 } else {

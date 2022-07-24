@@ -11,14 +11,20 @@ export const createCompiler = createCompilerCreator(function baseCompile(
   template: string,
   options: CompilerOptions
 ): CompiledResult {
+  // 把模板转换成ast 抽象语法树
+  // 抽象语法树，用来以树形的方式描述代码结构
   const ast = parse(template.trim(), options)
   if (options.optimize !== false) {
+    // 优化抽象语法树 标记AST中的静态节点
     optimize(ast, options)
   }
+  // 把抽象语法树生成字符串形式的 js 代码
   const code = generate(ast, options)
   return {
     ast,
+    // 渲染函数
     render: code.render,
+    // 静态渲染函数，生成静态的VNode树
     staticRenderFns: code.staticRenderFns
   }
 })
